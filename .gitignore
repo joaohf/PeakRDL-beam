@@ -1,0 +1,16 @@
+**/__pycache__
+**/.vscode
+**/.venv
+**/.coverage
+**/*.rpt
+**/.pytest_cache
+**/_build
+build/
+dist/
+*.egg-info/
+.coverage
+build/
+dist/
+*.egg-info/
+.eggs/
+*.out
