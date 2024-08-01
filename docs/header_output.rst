@@ -1,23 +1,23 @@
 Generated Header Contents
 =========================
 
-Block Structs
--------------
-All blocks such as ``addrmap``, ``regfile`` and ``mem`` components are represented
-as struct definitions. To ensure proper address layout, these are always declared
-as packed.
+.. Block Structs
+.. -------------
+.. All blocks such as ``addrmap``, ``regfile`` and ``mem`` components are represented
+.. as struct definitions. To ensure proper address layout, these are always declared
+.. as packed.
 
-Overlapping registers
-^^^^^^^^^^^^^^^^^^^^^
-If a pair of read-only + write-only register occupy the same address, they will
-be represented by an anonymous union of the two.
-If anonymous unions are not supported by the C-standard you have selected, the
-union will be named based on the two registers.
+.. Overlapping registers
+.. ^^^^^^^^^^^^^^^^^^^^^
+.. If a pair of read-only + write-only register occupy the same address, they will
+.. be represented by an anonymous union of the two.
+.. If anonymous unions are not supported by the C-standard you have selected, the
+.. union will be named based on the two registers.
 
 
 Bit-fiddling Field Macros
 -------------------------
-Each field is accompanied by several ``#define`` macros.
+Each field is accompanied by several ``-define`` macros.
 These allow register fields to be manipulated using bitwise boolean operations.
 
 The macro names are prefixed such that their definitions will not collide with
@@ -51,10 +51,10 @@ other fields of the same name.
     Only emitted if a field definition provides a constant reset value.
 
 
-Register bit-field structs
+Register bit-field records
 --------------------------
 
-If enabled, each register is represented by a nested union & struct definition.
+Each register is represented by a record definition.
 This allows a register value to be accessed in aggregate, or by its individual
 bit-fields.
 
@@ -68,23 +68,15 @@ bit-fields.
     LTOH is generally more common, but always be sure to verify. Running the
     generated testcase on your target is an easy way to confirm.
 
-If enabled, the register union will contain the following members:
+The register record contains all register members.
 
-.f
-    Contains a struct of bit-fields that represent the register.
+.. TODO: might be good to create specific registers per field type ?
+.. .f
+..     Contains a struct of bit-fields that represent the register.
 
-.w
-    Contains a word member that represents the aggregate register.
+.. .w
+..     Contains a word member that represents the aggregate register.
 
-.fr, .fw
-    If one or more read-only + write-only fields overlap, these fields are moved
-    to alternate union members so that they can be accessed explicitly.
-
-
-Wide Registers
---------------
-
-C's ``<stdint.h>`` types only extend up to 64-bit types.
-
-If a register is encountered that is larger than this, the generated
-header will represent it using an array of smaller sub-words.
+.. .fr, .fw
+..     If one or more read-only + write-only fields overlap, these fields are moved
+..     to alternate union members so that they can be accessed explicitly.

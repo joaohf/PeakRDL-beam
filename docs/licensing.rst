@@ -1,13 +1,16 @@
 Licensing
 =========
 
-Re-distribution of the PeakRDL-cheader code generator tool shall adhere to the
+Re-distribution of the PeakRDL-beam code generator tool shall adhere to the
 terms outlined by the GNU GPL v3 license. For a copy of the license, see:
-https://github.com/SystemRDL/PeakRDL-cheader/blob/main/LICENSE
+https://github.com/joaohf/PeakRDL-beam/blob/main/LICENSE
 
 
 Why GPL?
 --------
+As PeakRDL-beam was based on PeakRDL-cheader, it makes sense to keep the same
+license model used by PeakRDL-cheader. So the following is also valid here.
+
 GPL was chosen because my intent is to promote a thriving ecosystem of free and
 open source register automation tools. GPL discourages this tool to be bundled
 into some commercially sold closed-source software, as that would be contrary to
@@ -23,12 +26,12 @@ explicitly mentioned in the exemptions below.
 
 What is exempt from the GPL v3 license?
 ---------------------------------------
-Don't worry. Not everything that the PeakRDL-cheader project touches is
+Don't worry. Not everything that the PeakRDL-beam project touches is
 considered GPL v3 code.
 
 The following are exempt and are free to use with no restrictions:
 
-*   Any code that is generated using PeakRDL-cheader is 100% yours. Since it
+*   Any code that is generated using PeakRDL-beam is 100% yours. Since it
     was derived from your regblock definition, it remains yours. You can
     distribute it freely, use it in proprietary software, sell it as part of an
     IP, whatever.

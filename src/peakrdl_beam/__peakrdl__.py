@@ -4,43 +4,44 @@ from peakrdl.plugins.exporter import ExporterSubcommandPlugin #pylint: disable=i
 from peakrdl.config import schema #pylint: disable=import-error
 
 from .exporter import ErlangExporter
+from .beam_languages import BeamLanguages
 
 if TYPE_CHECKING:
     import argparse
     from systemrdl.node import AddrmapNode
 
 class Exporter(ExporterSubcommandPlugin):
-    short_desc = "Generate Erlang code of an address space"
+    short_desc = "Generate Erlang and Elixir code of an address space"
 
-    # cfg_schema = {
-    #     "std": schema.Choice(list(CStandard.__members__.keys())),
+    cfg_schema = {
+         "flavor": schema.Choice(list(BeamLanguages.__members__.keys())),
     #     "type_style": schema.Choice(['lexical', 'hier']),
     #     "subword_size": schema.Integer(),
-    #     "bitfields": schema.Choice(["ltoh", "htol", "none"]),
-    # }
+        "bitfields": schema.Choice(["ltoh", "htol", "none"]),
+    }
 
     def add_exporter_arguments(self, arg_group: 'argparse._ActionsContainer') -> None:
-        # arg_group.add_argument(
-        #     "--std",
-        #     choices=list(CStandard.__members__.keys()),
-        #     default=None,
-        #     help=f"""
-        #     Select the C standard that generated output will conform to. [{CStandard.latest.name}]
-        #     """
-        # )
+        arg_group.add_argument(
+            "--flavor",
+            choices=list(BeamLanguages.__members__.keys()),
+            default=None,
+            help=f"""
+            Select the C standard that generated output will conform to. [{BeamLanguages.default.name}]
+            """
+        )
 
-        # arg_group.add_argument(
-        #     "-b", "--bitfields",
-        #     choices=["ltoh", "htol", "none"],
-        #     default=None,
-        #     help="""
-        #     Enable generation of register bitfield structs to provide bit-level access
-        #     to fields.
+        arg_group.add_argument(
+            "-b", "--bitfields",
+            choices=["ltoh", "htol", "none"],
+            default=None,
+            help="""
+            Enable generation of register bitfield structs to provide bit-level access
+            to fields.
 
-        #     Since the packing order of C struct bitfields is implementation defined, the
-        #     packing order must be explicitly specified. [none]
-        #     """
-        # )
+            Since the packing order of C struct bitfields is implementation defined, the
+            packing order must be explicitly specified. [none]
+            """
+        )
 
         # arg_group.add_argument(
         #     "-x", "--explode-top",
@@ -115,12 +116,12 @@ class Exporter(ExporterSubcommandPlugin):
         pass
 
     def do_export(self, top_node: 'AddrmapNode', options: 'argparse.Namespace') -> None:
-        # std_name = options.std or self.cfg['std'] or "latest"
-        # std = CStandard[std_name]
+        flavor_name = options.flavor or self.cfg['flavor'] or "default"
+        flavor = BeamLanguages[flavor_name]
 
-        # bitfields = options.bitfields or self.cfg['bitfields'] or "none"
-        # generate_bitfields = bitfields != "none"
-        # bitfield_order_ltoh = bitfields == "ltoh"
+        bitfields = options.bitfields or self.cfg['bitfields'] or "none"
+        generate_bitfields = bitfields != "none"
+        bitfield_order_ltoh = bitfields == "ltoh"
 
         # type_style = options.type_style or self.cfg['type_style'] or "lexical"
         # reuse_typedefs = type_style == "lexical"
@@ -142,5 +143,5 @@ class Exporter(ExporterSubcommandPlugin):
         #     testcase=options.testcase,
         # )
         x = ErlangExporter()
-        x.export(top_node, path=options.output)
+        x.export(top_node, path=options.output, flavor=flavor, bitfield_order_ltoh=bitfield_order_ltoh)
         pass

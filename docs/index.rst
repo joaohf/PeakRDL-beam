@@ -1,17 +1,15 @@
 Introduction
 ============
 
-PeakRDL C-Header is a python package which can be used to generate a register
-abstraction layer C Header from a SystemRDL definition.
+PeakRDL BEAM is a python package which can be used to generate a register
+abstraction layer for supported BEAM languages (Erlang and Elixir) a SystemRDL definition.
 
 Features:
 
-* Generates C ``struct`` definitions that overlay your hardware address space
-* Supports complex nested structures, arrays, etc.
-* Field bit offset, width, mask, etc ``#define`` macros.
-* Can optionally generate register bit-field structs.
-* Optionally generates a test-case to validate correctness of the generated header.
-* Supports the full range of GNU C Standards.
+* Generates Erlang ``record`` definitions
+* Field bit offset, width, mask, etc ``-define`` macros.
+* Generates register bit-field and accessor help functions.
+.. * Optionally generates a test-case to validate correctness of the generated header.
 
 
 Installing
@@ -21,48 +19,44 @@ Install from `PyPi`_ using pip
 
 .. code-block:: bash
 
-    python3 -m pip install peakrdl-cheader
+    python3 -m pip install peakrdl-beam
 
-.. _PyPi: https://pypi.org/project/peakrdl-cheader
+.. _PyPi: https://pypi.org/project/peakrdl-beam
 
 
 Quick Start
 -----------
-The easiest way to use PeakRDL-ipxact is via the `PeakRDL command line tool <https://peakrdl.readthedocs.io/>`_:
+The easiest way to use PeakRDL-beam is via the `PeakRDL command line tool <https://peakrdl.readthedocs.io/>`_:
 
 .. code-block:: bash
 
     # Install the command line tool
     python3 -m pip install peakrdl
 
-    # Generate a C header
-    peakrdl c-header example.rdl -o example.h
+    # Generate an Erlang module and header
+    peakrdl beam example.rdl -o example.erl
 
-Using the generated header, you can access your device registers by name!
+Using the generated module and header, you can access your device registers by name!
 
-.. code-block:: c
+.. code-block:: erlang
 
-    #include "example.h"
+    -include("example.hrl")
 
-    int main void {
-        volatile example_t *dev = 0x42000; // hardware address of example device
+    main() ->
+        Data = read_register_from_hw(),
 
-        dev->my_reg = 1234;
-        for(int i=0; i<8; i++){
-            dev->block[i].ctrl = 456;
-        }
+        CtrlRecord = example:des_example__CTRL_f(Data),
 
-        return 0;
-    }
+        io:format("CTRL register ~p~n", [CtrlRecord#atxmega_spi__CTRL.mode]).
 
 
 Links
 -----
 
-- `Source repository <https://github.com/SystemRDL/PeakRDL-cheader>`_
-- `Release Notes <https://github.com/SystemRDL/PeakRDL-cheader/releases>`_
-- `Issue tracker <https://github.com/SystemRDL/PeakRDL-cheader/issues>`_
-- `PyPi <https://pypi.org/project/peakrdl-cheader>`_
+- `Source repository <https://github.com/joaohf/PeakRDL-beam>`_
+- `Release Notes <https://github.com/joaohf/PeakRDL-beam/releases>`_
+- `Issue tracker <https://github.com/joaohf/PeakRDL-beam/issues>`_
+- `PyPi <https://pypi.org/project/peakrdl-beam>`_
 - `SystemRDL Specification <http://accellera.org/downloads/standards/systemrdl>`_
 
 
@@ -70,7 +64,8 @@ Links
     :hidden:
 
     self
-    output
+    header_output
+    module_output
     configuring
     api
     licensing

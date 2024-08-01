@@ -10,25 +10,25 @@ Example
 -------
 
 The following example shows how to compile a SystemRDL file and then generate
-the C header using the Python API.
+the Erlang modules and header using the Python API.
 
 .. code-block:: python
 
     from systemrdl import RDLCompiler
-    from peakrdl_cheader.exporter import CHeaderExporter
+    from peakrdl_beam.exporter import ErlangExporter
 
     # compile the SystemRDL
     rdlc = RDLCompiler()
     rdlc.compile_file('example.rdl')
     top = rdlc.elaborate()
 
-    # generate the C header
-    exporter = CHeaderExporter()
-    exporter.export(node=top, path='out.h')
+    # generate the Erlang module and header
+    exporter = ErlangExporter()
+    exporter.export(node=top, path='out.erl')
 
 
 Exporter Class
 --------------
 
-.. autoclass:: peakrdl_cheader.exporter.CHeaderExporter
+.. autoclass:: peakrdl_beam.exporter.ErlangExporter
     :members:

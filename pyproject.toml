@@ -3,7 +3,7 @@ requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "peakrdl-erlang"
+name = "peakrdl-beam"
 dynamic = ["version"]
 requires-python = ">=3.6"
 dependencies = [
@@ -14,15 +14,15 @@ dependencies = [
 authors = [
     {name="João Henrique Ferreira de Freitas"}
 ]
-description = "Generate Erlang files from a SystemRDL register model"
+description = "Generate Erlang or Elixir modules from a SystemRDL register model"
 readme = "README.md"
 license = {file = "LICENSE"}
 keywords = [
     "SystemRDL", "PeakRDL", "CSR", "compiler", "tool", "registers", "generator",
-    "Erlang", "software",
+    "Erlang", "Elixir", "BEAM", "software",
 ]
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
+    "Development Status :: 2 - Pre-Alpha",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.6",
@@ -40,13 +40,13 @@ classifiers = [
 ]
 
 [project.urls]
-Source = "https://github.com/joaohf/PeakRDL-erlang"
-Tracker = "https://github.com/joaohf/PeakRDL-erlang/issues"
-Changelog = "https://github.com/joaohf/PeakRDL-erlang/releases"
-Documentation = "https://peakrdl-erlang.readthedocs.io/"
+Source = "https://github.com/joaohf/PeakRDL-beam"
+Tracker = "https://github.com/joaohf/PeakRDL-beam/issues"
+Changelog = "https://github.com/joaohf/PeakRDL-beam/releases"
+Documentation = "https://peakrdl-beam.readthedocs.io/"
 
 [tool.setuptools.dynamic]
-version = {attr = "peakrdl_erlang.__about__.__version__"}
+version = {attr = "peakrdl_beam.__about__.__version__"}
 
 [project.entry-points."peakrdl.exporters"]
-erlang = "peakrdl_erlang.__peakrdl__:Exporter"
+beam = "peakrdl_beam.__peakrdl__:Exporter"

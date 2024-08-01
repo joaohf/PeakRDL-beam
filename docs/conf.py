@@ -18,7 +18,7 @@ import datetime
 
 # -- Project information -----------------------------------------------------
 
-project = 'PeakRDL-erlang'
+project = 'PeakRDL-beam'
 copyright = '%d, João Henrique Ferreira de Freitas' % datetime.datetime.now().year
 author = 'João Henrique Ferreira de Freitas'
 
