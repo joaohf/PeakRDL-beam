@@ -86,7 +86,7 @@ class ErlangHeaderGenerator(RDLListener):
                 # if field.low > current_offset:
                 #     self.write(f"uint{regwidth}_t :{field.low - current_offset:d};\n")
                 #     current_offset = field.low
-                pfields.append(f"    {kwf(field.inst_name)}:{field.width:d}")
+                pfields.append(f"    {kwf(field.inst_name.upper())}:{field.width:d}")
                 #self.write(f"{kwf(field.inst_name)}:{field.width:d},\n")
                 current_offset += field.width
 
@@ -100,7 +100,7 @@ class ErlangHeaderGenerator(RDLListener):
                 # if field.low > current_offset:
                 #     self.write(f"uint{regwidth}_t :{field.low - current_offset:d};\n")
                 #     current_offset = field.low
-                pfields.append(f"    {kwf(field.inst_name)}:{field.width:d}")
+                pfields.append(f"    {kwf(field.inst_name.upper())}:{field.width:d}")
                 #self.write(f"{kwf(field.inst_name)}:{field.width:d},\n")
                 current_offset += field.width
         
@@ -111,9 +111,7 @@ class ErlangHeaderGenerator(RDLListener):
             return
         
         self.write(f"-define({union_name},\n")
-        #self.push_indent()
         self.write_bitfields(grp_name, regwidth, fields)
-        #self.pop_indent()
         self.write(f"\n).\n")
 
     def write_record(self, node: RegNode) -> None:

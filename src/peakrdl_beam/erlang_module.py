@@ -115,7 +115,7 @@ class ErlangModuleGenerator(RDLListener):
                 # if field.low > current_offset:
                 #     self.write(f"uint{regwidth}_t :{field.low - current_offset:d};\n")
                 #     current_offset = field.low
-                pfields.append(f"{field.inst_name}:{field.width:d}")
+                pfields.append(f"{field.inst_name.upper()}:{field.width:d}")
                 #self.write(f"{kwf(field.inst_name)}:{field.width:d},\n")
                 current_offset += field.width
 
@@ -129,7 +129,7 @@ class ErlangModuleGenerator(RDLListener):
                 # if field.low > current_offset:
                 #     self.write(f"uint{regwidth}_t :{field.low - current_offset:d};\n")
                 #     current_offset = field.low
-                pfields.append(f"{field.inst_name}:{field.width:d}")
+                pfields.append(f"{field.inst_name.upper()}:{field.width:d}")
                 #self.write(f"{kwf(field.inst_name)}:{field.width:d},\n")
                 current_offset += field.width
         
