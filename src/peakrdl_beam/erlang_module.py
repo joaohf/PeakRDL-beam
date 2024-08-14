@@ -199,7 +199,8 @@ class ErlangModuleGenerator(RDLListener):
 
         desc_str = "\n".join([ "%% " + s for s in description.splitlines()])
 
-        self.write(f"{desc_str}\n")
+        # Use verbatim quoting for function description
+        self.write(f"%% ```\n{desc_str}\n%% '''\n")
     
     def enter_Reg(self, node: RegNode) -> Optional[WalkerAction]:
         prefix = self.get_node_prefix(node).upper()
