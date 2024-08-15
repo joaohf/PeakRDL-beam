@@ -3,7 +3,7 @@ import os
 import re
 
 from systemrdl.walker import RDLListener, RDLWalker, WalkerAction
-from systemrdl.node import AddrmapNode, AddressableNode, RegNode, FieldNode, Node, MemNode
+from systemrdl.node import AddrmapNode, AddressableNode, RegNode, FieldNode, Node
 
 from .state import State
 from .identifier_filter import kw_filter as kwf
@@ -26,16 +26,18 @@ class ErlangHeaderGenerator(RDLListener):
     def run(self, base_path: str, top_nodes: List[AddrmapNode]) -> None:
         path = base_path + f".{self.s.flavor.header_extension}"
 
+        context = {
+            "module": re.sub(r"[^\w]", "_", os.path.basename(path).split('.')[0]),
+        }
+
+        # Stream header via jinja
+        output = self.s.jj_env.get_template("header.hrl").render(context)
+
         with open(path, "w", encoding='utf-8') as f:
             self.f = f
 
-            context = {
-                "module": re.sub(r"[^\w]", "_", os.path.basename(path).split('.')[0]),
-            }
+            f.write(output)
 
-            # Stream header via jinja
-            template = self.s.jj_env.get_template("header.hrl")
-            template.stream(context).dump(f)
             f.write("\n")
 
             # Generate definitions
@@ -69,7 +71,7 @@ class ErlangHeaderGenerator(RDLListener):
     def write_bitfields(self, grp_name: str, regwidth: int, fields: List[FieldNode]) -> None:
         if not fields:
             return
-        
+
         pfields = []
         # if regwidth > 64:
         #     # TODO: add support for this
@@ -103,23 +105,23 @@ class ErlangHeaderGenerator(RDLListener):
                 pfields.append(f"    {kwf(field.inst_name.upper())}:{field.width:d}")
                 #self.write(f"{kwf(field.inst_name)}:{field.width:d},\n")
                 current_offset += field.width
-        
+
         self.write(",\n".join(pfields))
 
     def write_define_bit_syntax(self, grp_name: str, union_name: str, regwidth: int, fields: List[FieldNode]) -> None:
         if not fields:
             return
-        
+
         self.write(f"-define({union_name},\n")
         self.write_bitfields(grp_name, regwidth, fields)
-        self.write(f"\n).\n")
+        self.write("\n).\n")
 
     def write_record(self, node: RegNode) -> None:
         union_name = self.get_struct_name(node)
         pfields = []
 
         self.write(f"-record({union_name}, {{\n")
-        
+
         for field in node.fields():
             pfields.append(f"    {kwf(field.inst_name.lower())}")
 

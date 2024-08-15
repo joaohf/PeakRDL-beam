@@ -113,8 +113,6 @@ class Exporter(ExporterSubcommandPlugin):
         #     """
         # )
 
-        pass
-
     def do_export(self, top_node: 'AddrmapNode', options: 'argparse.Namespace') -> None:
         flavor_name = options.flavor or self.cfg['flavor'] or "default"
         flavor = BeamLanguages[flavor_name]
@@ -144,4 +142,3 @@ class Exporter(ExporterSubcommandPlugin):
         # )
         x = ErlangExporter()
         x.export(top_node, path=options.output, flavor=flavor, bitfield_order_ltoh=bitfield_order_ltoh)
-        pass

@@ -1,10 +1,10 @@
-from typing import TextIO, Set, Optional, List
+from typing import Set, Optional, List
 import os
 import io
 import re
 
 from systemrdl.walker import RDLListener, RDLWalker, WalkerAction
-from systemrdl.node import AddrmapNode, AddressableNode, RegNode, FieldNode, Node, MemNode
+from systemrdl.node import AddrmapNode, AddressableNode, RegNode, FieldNode, Node
 
 from .state import State
 from .identifier_filter import kw_filter as kwf
@@ -34,15 +34,16 @@ class ErlangModuleGenerator(RDLListener):
             self.root_node = node
             RDLWalker().walk(node, self)
 
-        with open(path, "w", encoding='utf-8') as f:
-            context = {
-                "module": re.sub(r"[^\w]", "_", os.path.basename(path).split('.')[0]),
-                "exported_functions": self.exported_functions
-            }
+        # Stream header via jinja
+        context = {
+            "module": re.sub(r"[^\w]", "_", os.path.basename(path).split('.')[0]),
+            "exported_functions": self.exported_functions
+        }
+        output = self.s.jj_env.get_template("module.erl").render(context)
 
-            # Stream header via jinja
-            template = self.s.jj_env.get_template("module.erl")
-            template.stream(context).dump(f)
+        with open(path, "w", encoding='utf-8') as f:
+            f.write(output)
+
             f.write("\n")
 
             f.write(self.f.getvalue())
@@ -73,32 +74,32 @@ class ErlangModuleGenerator(RDLListener):
     def write_bitfields(self, fields: List[FieldNode]) -> None:
         if not fields:
             return
-        
+
         pfields = []
 
         for field in fields:
             pfields.append(f"        {kwf(field.inst_name.lower())} = {field.inst_name.upper()}")
-        
+
         self.write(",\n".join(pfields))
         self.write("\n")
 
     def write_serialize_arguments(self, fields: List[FieldNode]) -> None:
         if not fields:
             return
-        
+
         pfields = []
 
         for field in fields:
             pfields.append(f"{field.inst_name.upper()}")
-        
+
         self.write(", ".join(pfields))
 
     def write_bit_syntax(self, regwidth: int, fields: List[FieldNode]) -> None:
         if not fields:
             return
-        
+
         self.write("<<")
-        
+
         pfields = []
         # if regwidth > 64:
         #     # TODO: add support for this
@@ -132,7 +133,7 @@ class ErlangModuleGenerator(RDLListener):
                 pfields.append(f"{field.inst_name.upper()}:{field.width:d}")
                 #self.write(f"{kwf(field.inst_name)}:{field.width:d},\n")
                 current_offset += field.width
-        
+
         self.write(", ".join(pfields), False)
 
         self.write(">>", False)
@@ -140,7 +141,7 @@ class ErlangModuleGenerator(RDLListener):
     def write_deserialize_function(self, fields: List[FieldNode], func_name, macro_name, union_name, node: RegNode):
         if not fields:
             return
-        
+
         func_name = "des_" + func_name
 
         self.exported_functions.add(func_name + "/1")
@@ -153,11 +154,11 @@ class ErlangModuleGenerator(RDLListener):
         self.write("%% @end\n")
 
         self.write(f"{func_name}(<<?{macro_name}>>) ->\n")
-            
+
         self.push_indent()
         self.write(f"#{union_name}{{\n")
         self.pop_indent()
-            
+
         self.write_bitfields(fields)
 
         self.push_indent()
@@ -167,7 +168,7 @@ class ErlangModuleGenerator(RDLListener):
     def write_serialize_function(self, fields: List[FieldNode], func_name, arity, node: RegNode):
         if not fields:
             return
-        
+
         func_name = "ser_" + func_name
 
         regwidth = node.get_property('regwidth')
@@ -201,7 +202,7 @@ class ErlangModuleGenerator(RDLListener):
 
         # Use verbatim quoting for function description
         self.write(f"%% ```\n{desc_str}\n%% '''\n")
-    
+
     def enter_Reg(self, node: RegNode) -> Optional[WalkerAction]:
         prefix = self.get_node_prefix(node).upper()
 
@@ -252,7 +253,7 @@ class ErlangModuleGenerator(RDLListener):
                     fw_fields.append(field)
             else:
                 f_fields.append(field)
-        
+
         arity_f = len(f_fields)
         func_name_f = union_name + "_f"
         macro_name_f = union_name.upper() + "_f"

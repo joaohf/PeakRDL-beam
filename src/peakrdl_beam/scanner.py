@@ -35,7 +35,7 @@ class Scanner(RDLListener):
         if not isinstance(node, RegNode):
             self.prev_reg_stack.pop()
         return WalkerAction.Continue
-    
+
     def enter_Component(self, node):
         if not isinstance(node, FieldNode):
             print("\t"*self.indent, node.get_path_segment())
@@ -96,7 +96,7 @@ class Scanner(RDLListener):
                 )
 
             # Save information about register overlap pair
-            self.ds.overlapping_reg_pairs[prev_reg.get_path()] = node.inst_name
+            self.s.overlapping_reg_pairs[prev_reg.get_path()] = node.inst_name
 
         # Check for sparse register arrays
         if node.is_array and node.array_stride > node.size:

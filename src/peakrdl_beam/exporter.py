@@ -46,7 +46,7 @@ class ErlangExporter:
                     top_nodes.append(child)
         else:
             top_nodes.append(top_node)
-        
+
         (base_path, ext) = os.path.splitext(path)
 
         # Write output
